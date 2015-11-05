@@ -39,6 +39,7 @@ public class DeviceSearcher {
     private BluetoothAdapter mBtAdapter;
     private Set<BluetoothDevice> pairedDevices;
     private OnDeviceFoundListener mOnDeviceFoundListener;
+    private boolean isDiscovering;
 
     public DeviceSearcher(final Context context, final OnDeviceFoundListener onDeviceFoundListener) {
         mContext = context;
@@ -51,6 +52,7 @@ public class DeviceSearcher {
 
     public void startDiscovery() {
         // If there are paired devices, add each one to the ArrayAdapter
+        isDiscovering = true;
         if (pairedDevices.size() > 0) {
             for (BluetoothDevice device : pairedDevices) {
                 if (mOnDeviceFoundListener != null) {
@@ -65,10 +67,13 @@ public class DeviceSearcher {
     }
 
     public void stopDiscovery() {
-        if (mBtAdapter != null && mBtAdapter.isDiscovering()) {
-            mBtAdapter.cancelDiscovery();
+        if (isDiscovering) {
+            isDiscovering = false;
+            if (mBtAdapter != null && mBtAdapter.isDiscovering()) {
+                mBtAdapter.cancelDiscovery();
+            }
+            mContext.unregisterReceiver(mReceiver);
         }
-        mContext.unregisterReceiver(mReceiver);
     }
 
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
