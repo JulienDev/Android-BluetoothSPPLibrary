@@ -121,7 +121,7 @@ public class BluetoothSPP {
     }
     
     public void setupService() {
-        mChatService = new BluetoothService(mContext, mHandler);
+        mChatService = new BluetoothService(mHandler);
     }
     
     public BluetoothAdapter getBluetoothAdapter() {
